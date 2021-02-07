@@ -1,0 +1,192 @@
+---
+title: "TUGAS APG Pert 1"
+author: "Fatkhul Mukhlish Al-haq"
+date: "2/7/2021"
+output:
+  word_document: default
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, comment=NA)
+```
+
+## FUNCTION
+```{r echo=TRUE}
+# Fungsi rata-rata sample
+meanSample<- function(x){
+  meanS = sum(x, na.rm = TRUE)/length(!is.na(x))
+  return(meanS)
+}
+
+# Fungsi varians sample
+varianceSample<- function(x){
+  meanx = meanSample(x)
+  diff = x - meanx
+  squared_diff = diff^2
+  variansS = sum(squared_diff)/ (length(x) - 1)
+  return(variansS)
+}
+
+# Fungsi Covarians sample
+covarianSample<- function(x,y){
+  if(length(x)!=length(y)){
+    stop('banyak sample x harus sama dengan y')
+  }
+  x.bar = meanSample(x)
+  y.bar = meanSample(y)
+  N = length(x)
+  
+  Cov = (sum((x-x.bar)*(y-y.bar)))/(N-1)
+  return(Cov)
+}
+
+# Fungsi Correlation sample
+correlationSample<- function(x,y){
+  cor = covarianSample(x,y)/sqrt(varianceSample(x)*varianceSample(y))
+  return(cor)
+}
+
+```
+
+
+## NO 1.1
+
+```{r echo=FALSE, results='asis'}
+tabl <- " Consider the seven pairs of measurements (x1 , x2) plotted in Figure 1.1:
+
+                    x1| 3  4    2  6  8   2  5  
+                   ---|-------------------------
+                    x2| 5  5.5  4  7  10  5  7.5
+"
+cat(tabl)
+
+```
+
+Calculate the sample means x1 and x2, the sample variances s11 and s22, and the sample covariance s12! 
+
+Jawab:
+
+```{r}
+# input data
+x1<-c(3,4,2,6,8,2,5)
+x2<-c(5,5.5,4,7,10,5,7.5)
+
+# Mean 
+meanSample(x1)
+meanSample(x2)
+
+# Variance
+varianceSample(x1)
+varianceSample(x2)
+
+# Covariance
+covarianSample(x1,x2)
+```
+
+## NO 2
+
+```{r echo=FALSE, results='asis'}
+tabl <- "The 10 largest U.S. industrial corporations yield in millions of dollars the following data:
+
+      |     Company      | x1 = sales | x2 = profits | x3 = assets |
+      |:----------------:|:----------:|:------------:|:-----------:|
+      | General Motors   |  126,974   |    4,224     |   173,297   |
+      | Ford             |   96,933   |    3,835     |   160,893   |
+      | Exxon            |   86,656   |    3,510     |    83,219   |
+      | IBM              |   63,438   |    3,758     |    77,734   |
+      | General Electric |   55,264   |    3,939     |   128,344   |
+      | Mobil            |   50,976   |    1,809     |    39,080   |
+      | Philip Morris    |   39,069   |    2,946     |    38,528   |
+      | Chrysler         |   36,156   |      359     |    51,038   |
+      | Du Pont          |   35,209   |    2,480     |    34,715   |
+      | Texaco           |   32,416   |    2,413     |    25,636   |
+"
+cat(tabl)
+```
+
+a.  Plot the scatter diagram and marginal dot diagrams for variables x1 and x2 . Comment on the appearance of the diagrams. 
+
+b.  Compute x1 , x2 , s1 1 , s22 , s12, and r12. Interpret r12. 
+
+Jawab:
+
+```{r}
+# Create Data frame
+library(ggplot2)
+library(ggExtra)
+company<- c('General Motors', 'Ford', 'Exxon', 'IBM', 'General Electric', 'Mobil', 'Philip Morris', 'Chrysler', 'Du Pont', 'Texaco')
+sales<- c(126974, 96933, 86656, 63438, 55264, 50976, 39069, 36156, 35209, 32416)
+profits<- c(4224, 3835, 3510, 3758, 3939, 1809, 2946, 359, 2480, 2413)
+assets<- c(173297, 160893, 83219, 77734, 128344, 39080, 38528, 51038, 34715, 25636)
+dataUS<- data.frame(company,sales,profits,assets)
+
+# Scatter plot x1,x2
+plotScat<- ggplot(dataUS, aes(x = sales, y = profits)) +
+  geom_point() +
+  labs(title = "Scatter plot Sales and Profits", x = "Sales in millions of dollars", y = "profits in millions of dollars")
+
+# Marginal plot histogram
+plotMargin1<- ggMarginal(plotScat, type = "histogram", size=3, colour ="red")
+
+# Marginal plot density
+plotMargin2<- ggMarginal(plotScat, type = "density", size = 3, colour ="red")
+
+# Marginal box plot
+plotMargin3 <- ggMarginal(plotScat, type = "boxplot", size = 3)
+```
+
+- Scatter Plot x1, x2
+
+```{r echo=FALSE}
+plotScat
+```
+
+- Marginal Plot Histogram x1,x2
+
+```{r echo=FALSE}
+plotMargin1
+```
+
+- Marginal Plot Density x1,x2
+
+```{r echo=FALSE}
+plotMargin2
+```
+
+- Marginal Box Plot x1,x2
+
+```{r echo=FALSE}
+plotMargin3
+```
+
+- Means
+
+```{r}
+#x1
+meanSample(dataUS$sales)
+
+#x2
+meanSample(dataUS$profits)
+```
+
+- Variance
+
+```{r}
+#x1
+varianceSample(dataUS$sales)
+#x2
+varianceSample(dataUS$profits)
+```
+
+- Covariance x1,x2
+
+```{r}
+covarianSample(dataUS$sales,dataUS$profits)
+```
+
+- Correlation x1,x2
+
+```{r}
+correlationSample(dataUS$sales,dataUS$profits)
+```
+interpretasi: Berdasarkan hasil korelasi diatas, antara sales dan profits memiliki hubungan positif sebesar 0.676 yang berarti ketika sales bertambah, maka profits juga bertambah.
