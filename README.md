@@ -1,2 +1,2 @@
 # APG
-berisi tugas-tugas apg
+berisi tugas-tugas mata kuliah analisis peubah ganda
